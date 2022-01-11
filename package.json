@@ -1,0 +1,33 @@
+{
+  "name": "fundall_ewallet_project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --experimental-modules --es-module-specifier-resolution=node app.js",
+    "dev": "SET NODE_ENV=development&&nodemon --exec babel-node app.js",
+    "test": "SET NODE_ENV=test&&jest --runInBand --verbose --forceExit --detectOpenHandles --coverage && coveralls < coverage/lcov.info",
+    "prod": "SET NODE_ENV=production&&nodemon --exec babel-node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.16.8",
+    "@babel/core": "^7.16.7",
+    "@babel/node": "^7.16.8",
+    "@babel/plugin-transform-runtime": "^7.16.8",
+    "@babel/preset-env": "^7.16.8",
+    "@babel/register": "^7.16.9",
+    "@babel/runtime": "^7.16.7",
+    "eslint": "^8.6.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "nodemon": "^2.0.15",
+    "prettier": "^2.5.1"
+  },
+  "dependencies": {
+    "dotenv": "^11.0.0",
+    "express": "^4.17.2",
+    "sequelize": "^6.13.0"
+  }
+}
