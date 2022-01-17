@@ -39,7 +39,7 @@ app.use('/api/v1', user);
 //Error Handler Middleware
 app.use(errorMiddleware);
 
-app.listen(port, () => console.log(`server running on port ${port} in ${environment} mode`))
+let server = app.listen(port, () => console.log(`server running on port ${port} in ${environment} mode`))
 
 //Error handler for unhandled rejections
 process.on('unhandledRejection', (err) => {
@@ -49,3 +49,5 @@ process.on('unhandledRejection', (err) => {
         process.exit(1)
     }) 
 });
+
+export default server;
