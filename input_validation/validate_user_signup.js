@@ -8,9 +8,6 @@ import Joi from 'joi';
 const validateUserSignUp = (user) => {
     
     const schema = Joi.object({
-
-        id:         Joi.string()
-                    .required(),
         firstName:  Joi.string()
                     .required(),
         lastName:   Joi.string()

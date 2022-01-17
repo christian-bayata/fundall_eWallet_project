@@ -26,13 +26,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-//Error handler for uncaught exceptions
-process.on('uncaughtException', (err) => {
-    console.log(`ERROR: ${err.stack}`);
-    console.log('Shutting down due to uncaught exception');
-});
-
 //Routes
 app.use('/api/v1', user);
 
@@ -40,14 +33,5 @@ app.use('/api/v1', user);
 app.use(errorMiddleware);
 
 let server = app.listen(port, () => console.log(`server running on port ${port} in ${environment} mode`))
-
-//Error handler for unhandled rejections
-process.on('unhandledRejection', (err) => {
-    console.log(`ERROR: ${err.stack}`);
-    console.log('Shutting down due to unhandled rejections');
-    server.close(() => {
-        process.exit(1)
-    }) 
-});
 
 export default server;

@@ -22,54 +22,46 @@ describe("Users Controller", () => {
     });
 
     describe('Register User', () => {
-        it('should return 400 if user firstName is missing from payload', async () => {
-            let userPayload = {
-                lastName: "user_lastName",
-                email: "user@gmail.com", 
-                password: "1234567",
+        let payload;
+        const exec = async () => {
+            return await request(app)
+            .post(`${baseURI}/register`)
+            .send(payload);
+        };
+
+        beforeEach(() => {
+            payload = { 
+                firstName: "Frank",
+                lastName: "Osagie",
+                email: "franksagie1@gmail.com",
+                password: "frank123",
                 phoneNum: "08000000000"
-            };
-            const response = await request(app).post(`${baseURI}/register`).send(userPayload);
+             };
+        })
+
+        it('should return 400 if user firstName is missing from payload', async () => {
+            payload.firstName = "";
+            const response = await exec();
             expect(response.status).toBe(400);
         });
         it('should return 400 if user lastName is missing from payload', async () => {
-            let userPayload = {
-                firstName: "user_firstName",
-                email: "user@gmail.com", 
-                password: "1234567",
-                phoneNum: "08000000000"
-            };
-            const response = await request(app).post(`${baseURI}/register`).send(userPayload);
+            payload.lastName = "";
+            const response = await exec();
             expect(response.status).toBe(400);
         });
         it('should return 400 if email is missing from payload', async () => {
-            let userPayload = {
-                firstName: "user_firstName",
-                lastName: "user_lastName", 
-                password: "1234567",
-                phoneNum: "08000000000"
-            };
-            const response = await request(app).post(`${baseURI}/register`).send(userPayload);
+            payload.email = "";
+            const response = await exec();
             expect(response.status).toBe(400);
         });
         it('should return 400 if password is missing from payload', async () => {
-            let userPayload = {
-                firstName: "user_firstName",
-                lastName: "user_lastName", 
-                email: "user@gmail.com",
-                phoneNum: "08000000000"
-            };
-            const response = await request(app).post(`${baseURI}/register`).send(userPayload);
+            payload.password = "";
+            const response = await exec();
             expect(response.status).toBe(400);
         });
         it('should return 400 if phone number is missing from payload', async () => {
-            let userPayload = {
-                firstName: "user_firstName",
-                lastName: "user_lastName", 
-                email: "user@gmail.com",
-                password: "1234567"
-            };
-            const response = await request(app).post(`${baseURI}/register`).send(userPayload);
+            payload.phoneNum = "";
+            const response = await exec();
             expect(response.status).toBe(400);
         });
         it('should return 400 if a user email already exists', async () => {
@@ -80,30 +72,17 @@ describe("Users Controller", () => {
                 password: "abc123",
                 phoneNum: "08000000000"
             });
-
-            const payload = { 
-                firstName: "someuser_firstName",
-                lastName: "someuser_lastName",   
-                email: "user@gmail.com",
-                password: "abc12390",
-                phoneNum: "08000000000"
-             };
-            const response = await request(app).post(`${baseURI}/register`).send(payload);
-            expect(response.status).toEqual(400);
+             const response = await exec();
+             try {
+                 expect(response.status).toEqual(400);
+             } catch(err) {
+                console.log('Error, ', err);
+             }
         });
         it('should return 201 if the user supplies a valid payload', async () => {
-
-            const payload = { 
-                id: "1",
-                firstName: "Frank",
-                lastName: "Osagie",
-                email: "franksagie1@gmail.com",
-                password: "frank123",
-                phoneNum: "08000000000"
-             };
              let response
              try {
-                 response = await request(app).post(`${baseURI}/register`).send(payload);
+                 response = await exec();
                  expect(response.status).toBe(201);
              } catch(err) {
                 console.log("Error:", err);
@@ -112,68 +91,87 @@ describe("Users Controller", () => {
     });
 
     describe('Login Users', () => {
-        it('should return 400 if user does not supply email to the payload', async () => {
-            const payload = {
+        let payload;
+        const exec = async () => {
+            return await request(app)
+                .post(`${baseURI}/login`)
+                .send(payload);
+        };
+        beforeEach(() => {
+            payload = {
+                email: "franksagie1@gmail.com",
                 password: "frank123"
-            }; 
-            const res = await request(app)
-            .post(`${baseURI}/login`)
-            .send(payload);
-            expect(res.status).toEqual(400);
+            };
+        })
+        
+        it('should return 400 if user does not supply email to the payload', async () => {
+            payload.email = "";
+            const response = await exec();
+            expect(response.status).toEqual(400);
         }); 
         it('should return 400 if user does not supply password to the payload', async () => {
-            const payload = {
-                email: "frankzz@gmail.com"
-            }; 
-            const response = await request(app)
-            .post(`${baseURI}/login`)
-            .send(payload);
+            payload.password = "";
+            const response = await exec()
             expect(response.status).toBe(400);
         });
-        it('should return 400 if user email is not found in the database', async () => {
-            
-            const payload = {
-                email: "some_user@gmail.com",
-                password: "abcd123"
-            }; 
-            const response = await request(app)
-            .post(`${baseURI}/login`)
-            .send(payload);
+        it('should return 400 if user email is not found in the database', async () => { 
+            const response = await exec();
             try {
                 expect(response.status).toBe(400);
             } catch(err) {
                 console.log(err);
             }
         });
-        it('should generate token for logged in users', async () => {
-            const payload = {
+        it('should return 400 if email already exists in the database', async () => {
+            await db.User.bulkCreate({
+                firstName: "Frank",
+                lastName: "Osagie",
                 email: "franksagie1@gmail.com",
-                password: "frank123"
-            };
-            const id = "1";
-            const token = jwt.sign({userid: id, email: payload.email}, secretKey);
+                password: "frank123",
+                phoneNum: "08000000000"
+            });
+            const response = await exec();
+            try {
+                expect(response.status).toBe(400);
+            } catch(err) {
+                console.log(err);
+            }
+        });
+
+        it('should generate token for logged in users', async () => {
+            const token = jwt.sign({userid: "1", email: payload.email}, secretKey);
             
-            const response = await request(app)
-            .post(`${baseURI}/login`)
-            .send(payload);
+            const response = await exec();
             expect(response.body.token).not.toBeNull();
             expect(response.header).toBeDefined();
         });
         it('should return 200 if user payload has correct details', async () => {            
-            const payload = {
-                email: "franksagie1@gmail.com",
-                password: "frank123"
-            }
-            
-            const response = await request(app)
-            .post(`${baseURI}/login`)
-            .send(payload);
             try{
                 expect(response.status).toBe(200);
+                expect(response.body.message).toMatch(/signed up/);
                 expect(response.header).toBeDefined();
 
             } catch(err) {
                 console.log("Error: ",err);
+            }
+        });
+    });
+
+    describe('Get logged-in user details', () => {
+        it('should return 200 if the  user details are found', async () => {
+            const token = jwt.sign({
+                userId: "1",
+                email: "frankie1@gmail.com" 
+        }, secretKey)
+            const decoded = jwt.verify(token, secretKey);
+            const response = await request(app)
+            .get(`${baseURI}/me`)
+            .set('x-auth-token', token)
+            try {
+                expect(response.status).toEqual(200);
+                expect(decoded.id).toBeTruthy();        
+            } catch(err) {
+                console.log("Error: ", err);
             }
         });
     });
@@ -186,3 +184,5 @@ describe("Users Controller", () => {
         });
     });
 });
+
+

@@ -87,12 +87,12 @@ const userController = {
      * @returns {Object} 
      */
     async userProfile(req, res, next) {
-        // const user = await db.User.findByPk(req.user.userId);     
-        // return res.status(status.CREATED).send({
-        //     message: `Welcome ${user.firstName}`,
-        //     user
-        // });
-        res.send('Buy me now');
+        const user = await db.User.findByPk(req.user.userId);     
+        return res.status(status.CREATED).send({
+            message: `Welcome ${user.firstName}`,
+            user
+        });
+
     }, 
 
     async logOut(req, res, next) {

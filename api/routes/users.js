@@ -8,7 +8,7 @@ router.route('/register').post(userController.signUp);
 
 router.route('/login').post(userController.login);
 
-router.route('/me').get(Auth.isAuthorized, userController.userProfile);
+router.route('/me').get(Auth.verifyToken, userController.userProfile);
 
 router.route('/logout').get(userController.logOut);
 
