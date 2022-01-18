@@ -34,27 +34,3 @@ db.Sequelize = Sequelize;
 
 module.exports = db;
 
-
-// import {config} from '../config/db_config';
-
-// import Sequelize from 'sequelize';
-// const sequelizeInstance = new Sequelize(config.DB, config.USER, config.PASSWORD, {
-//   host: config.HOST,
-//   dialect: config.dialect,
-
-//   // pool: {
-//   //   max: config.pool.max,
-//   //   min: config.pool.min,
-//   //   acquire: config.pool.acquire,
-//   //   idle: config.pool.idle
-//   // }
-// });
-
-// const db = {};
-
-// db.Sequelize = Sequelize;
-// db.sequelize = sequelizeInstance;
-
-// db.users = require("./users")(sequelizeInstance, Sequelize);
-
-// export default db;
